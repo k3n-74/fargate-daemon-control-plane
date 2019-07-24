@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: fargate-daemon-control-plane
+
+Parameters:
+
+  EnvName:
+    Description: Environment prefix
+    Type: String
+
+Resources:
+
+  ### VPC
+  MainVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvName}-vpc
+        - Key: EnvName
+          Value: !Ref EnvName
+
+  ### Route Tables
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MainVpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvName}-rt
+        - Key: EnvName
+          Value: !Ref EnvName
+
+  ### Subnets
+
+  # Public a
+  PubSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVpc
+      CidrBlock: 10.0.10.0/24
+      AvailabilityZone: "ap-northeast-1a"
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvName}-cluster-a
+        - Key: EnvName
+          Value: !Ref EnvName
+
+  PubSubnetASubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PubSubnetA
+      RouteTableId: !Ref PublicRouteTable
+
+  # Public c
+  PubSubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVpc
+      CidrBlock: 10.0.11.0/24
+      AvailabilityZone: "ap-northeast-1c"
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvName}-cluster-c
+        - Key: EnvName
+          Value: !Ref EnvName
+
+  PubSubnetCSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PubSubnetC
+      RouteTableId: !Ref PublicRouteTable
+
+
+  ### Internet Gateway
+  MainInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvName}-igw
+        - Key: EnvName
+          Value: !Ref EnvName
+
+  AttachInternetGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MainVpc
+      InternetGatewayId: !Ref MainInternetGateway
+
+  MainRoute:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - MainInternetGateway
+      - AttachInternetGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MainInternetGateway
+
+  ### ECS Cluster
+
+  # Daemon ECS Cluster
+  DaemonEcsCluster:
+    Type: AWS::ECS::Cluster
+
+  ## Role
+  EcsTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ecs-tasks.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEcsTaskExecutionRolePolicy
+
