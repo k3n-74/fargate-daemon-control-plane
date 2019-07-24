@@ -1,24 +1,22 @@
 # fargate-daemon-control-plane
 
 
-API
+## API
 
-StartDaemon
-StopDaemon
+* StartDaemon
+* StopDaemon
+* UpdateDaemon
+  * task definition
+  * fargate platform
+* DescribeDaemon
+* ListDaemons
 
-UpdateDaemon
-  task definition
-  fargate platform
+## Event
 
-DescribeDaemon
-ListDaemons
-
-Event
-
-daemon-started
-daemon-state-illegal-stopped
-daemon-state-recovered
-daemon-stopped
-next-daemon-readied
-old-daemon-stopped
+* daemon-started
+* daemon-state-illegal-stopped
+* daemon-state-recovered
+* daemon-stopped
+* next-daemon-readied
+* old-daemon-stopped
 
