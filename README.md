@@ -3,15 +3,21 @@
 
 ## API
 
+### Lambda Function Interface
 * StartDaemon
 * StopDaemon
-* UpdateDaemon
+* PrepareSwapDaemon
+  * daemon id
+  * task definition
+  * fargate platform
+* CompleteSwapDaemon
+  * daemon id
   * task definition
   * fargate platform
 * DescribeDaemon
 * ListDaemons
 
-## Event
+## Event Interface
 
 * daemon-started
 * daemon-state-illegal-stopped
@@ -20,3 +26,4 @@
 * next-daemon-readied
 * old-daemon-stopped
 
+previous, current, next
