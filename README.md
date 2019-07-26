@@ -3,7 +3,7 @@
 
 ## API
 
-### Lambda Function Interface
+### Lambda Functions Interface
 * StartDaemon
 * StopDaemon
 * PrepareSwapDaemon
@@ -17,7 +17,7 @@
 * DescribeDaemon
 * ListDaemons
 
-## Event Interface
+### Events Interface
 
 * daemon-started
 * daemon-state-illegal-stopped
