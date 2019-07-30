@@ -8,6 +8,10 @@ Parameters:
     Description: Environment prefix
     Type: String
 
+  GitHubToken:
+    Type: String
+    NoEcho: true
+
 Resources:
 
   # Pipeline artifact store
@@ -218,7 +222,7 @@ Resources:
       Stages:
         - Name: Source
           Actions:
-            - Name: daemon
+            - Name: src-daemon
               ActionTypeId:
                 Category: Source
                 Owner: ThirdParty
@@ -228,7 +232,7 @@ Resources:
                 Owner: "ken-takehara"
                 Repo: "fargate-daemon-control-plane"
                 Branch: "develop"
-                # OAuthToken: !Ref GitHubToken
+                OAuthToken: !Ref GitHubToken
                 PollForSourceChanges: false
               OutputArtifacts:
                 - Name: RepoDaemon
@@ -282,7 +286,7 @@ Resources:
                   }
               InputArtifacts:
                 - Name: PkgDaemonCfn
-                - Name: BuildDaemonCon
+                # - Name: BuildDaemonCon
               OutputArtifacts:
                 - Name: DepDaemonCfn
               RunOrder: 1
