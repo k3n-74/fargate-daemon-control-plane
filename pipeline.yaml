@@ -8,10 +8,6 @@ Parameters:
     Description: Environment prefix
     Type: String
 
-  GitHubRepoOwner:
-    Type: String
-    Default: 'ken-takehara'
-
 Resources:
 
   # Pipeline artifact store
@@ -229,7 +225,7 @@ Resources:
                 Version: "1"
                 Provider: GitHub
               Configuration:
-                Owner: !Ref GitHubRepoOwner
+                Owner: "ken-takehara"
                 Repo: "fargate-daemon-control-plane"
                 Branch: "develop"
                 # OAuthToken: !Ref GitHubToken
