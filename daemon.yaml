@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
 
 Description: fargate-daemon-control-plane
 
@@ -122,3 +123,158 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEcsTaskExecutionRolePolicy
 
+  ### Lambda
+
+  LambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+
+  StartDaemonFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./StartDaemonFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  StartDaemonFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${StartDaemonFunc}"
+      RetentionInDays: 400
+
+  StopDaemonFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./StopDaemonFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  StopDaemonFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${StopDaemonFunc}"
+      RetentionInDays: 400
+
+  PrepareSwapDaemonFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./PrepareSwapDaemonFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  PrepareSwapDaemonFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${PrepareSwapDaemonFunc}"
+      RetentionInDays: 400
+
+  CompleteSwapDaemonFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./CompleteSwapDaemonFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  CompleteSwapDaemonFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${CompleteSwapDaemonFunc}"
+      RetentionInDays: 400
+
+  DescribeDaemonFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./DescribeDaemonFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  DescribeDaemonFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${DescribeDaemonFunc}"
+      RetentionInDays: 400
+
+  ListDaemonsFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./ListDaemonsFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  ListDaemonsFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ListDaemonsFunc}"
+      RetentionInDays: 400
+
+  EcsEventListenerFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./EcsEventListenerFunc
+      Handler: "lambda_function.lambda_handler"
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+      MemorySize: 512
+      AutoPublishAlias: live
+      Tracing: "Active"
+      Tags:
+        EnvName: !Ref EnvName
+
+  EcsEventListenerFuncStdLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${EcsEventListenerFunc}"
+      RetentionInDays: 400
