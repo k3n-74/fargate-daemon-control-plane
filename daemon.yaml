@@ -304,3 +304,34 @@ Resources:
       Principal: events.amazonaws.com
       SourceArn: !GetAtt EcsEventRule.Arn
 
+  ### DynamoDB
+
+  DaemonList:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${EnvName}-daemon-list"
+      BillingMode: "PAY_PER_REQUEST"
+      # ProvisionedThroughput:
+      #   ReadCapacityUnits: 5
+      #   WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: "daemon-id"
+          AttributeType: "S"
+        - AttributeName: "task-arn"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "daemon-id"
+          KeyType: "HASH"
+        - AttributeName: "task-arn"
+          KeyType: "RANGE"
+      # PointInTimeRecoverySpecification:
+      #   PointInTimeRecoveryEnabled: true
+      # TimeToLiveSpecification:
+      #   AttributeName: "ttl"
+      #   Enabled: true
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - Key: EnvName
+          Value: !Ref EnvName
+
