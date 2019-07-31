@@ -278,3 +278,28 @@ Resources:
     Properties:
       LogGroupName: !Sub "/aws/lambda/${EcsEventListenerFunc}"
       RetentionInDays: 400
+
+  ### Events Rule
+
+  EcsEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: EventRule
+      EventPattern:
+        source:
+          - aws.ecs
+        detail:
+          clusterArn: !GetAtt DaemonEcsCluster.Arn
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt EcsEventListenerFunc.Arn
+          Id: !Sub ${EcsEventListenerFunc}-target-id
+
+  InvokePermissionForEcsEventRule:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !Ref EcsEventListenerFunc
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt EcsEventRule.Arn
+
