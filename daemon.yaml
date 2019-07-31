@@ -150,6 +150,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
@@ -170,6 +174,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
@@ -190,6 +198,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
@@ -210,6 +222,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
@@ -230,6 +246,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
@@ -250,6 +270,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
@@ -270,6 +294,10 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Environment:
+        Variables:
+          EnvName: !Ref EnvName
+          ClusterArn: !GetAtt DaemonEcsCluster.Arn
       Tags:
         EnvName: !Ref EnvName
 
