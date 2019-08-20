@@ -125,6 +125,18 @@ Resources:
 
   ### Lambda
 
+  ## Layer
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub "${EnvName}-fdcp-common"
+      Description: "Dependencies for fargate daemon control plane"
+      ContentUri: ./CommonLayer/
+      CompatibleRuntimes: 
+        - python3.7
+      RetentionPolicy: Retain
+
+  ## Function
   LambdaRole:
     Type: "AWS::IAM::Role"
     Properties:
@@ -150,6 +162,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
@@ -174,6 +188,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
@@ -198,6 +214,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
@@ -222,6 +240,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
@@ -246,6 +266,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
@@ -270,6 +292,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
@@ -294,6 +318,8 @@ Resources:
       MemorySize: 512
       AutoPublishAlias: live
       Tracing: "Active"
+      Layers:
+        - !Ref CommonLayer
       Environment:
         Variables:
           EnvName: !Ref EnvName
