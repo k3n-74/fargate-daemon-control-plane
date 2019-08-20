@@ -1,11 +1,11 @@
 import json
 import boto3
 import time
-# from aws_xray_sdk.core import patch_all
+from aws_xray_sdk.core import patch_all
 from botocore.client import ClientError, Config
 import traceback
 
-# patch_all()
+patch_all()
 
 run_task_res = None
 
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
                 taskDefinition=taskDefinition,
                 launchType=launchType,
                 networkConfiguration=networkConfiguration,
-                # tags=[ { 'key' : 'DCP_DAEMON_ID' , 'value' : daemon_id } ]
+                tags=[ { 'key' : 'DCP_DAEMON_ID' , 'value' : daemon_id } ]
             )
         
         
@@ -44,6 +44,8 @@ def lambda_handler(event, context):
     except Exception as e:
         traceback.print_exc()
         raise e
+    
+    print(run_task_res)
     
     ret = {
         'taskArn' : run_task_res.get('tasks')[0].get('taskArn'),
