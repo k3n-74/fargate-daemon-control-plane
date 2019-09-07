@@ -363,7 +363,7 @@ Resources:
   DaemonList:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "${EnvName}-daemon-list2"
+      TableName: !Sub "${EnvName}-daemon-master"
       BillingMode: "PAY_PER_REQUEST"
       # ProvisionedThroughput:
       #   ReadCapacityUnits: 5
