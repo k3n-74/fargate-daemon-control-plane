@@ -371,13 +371,13 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "daemon-id"
           AttributeType: "S"
-        - AttributeName: "task-arn"
-          AttributeType: "S"
+        # - AttributeName: "task-arn"
+        #   AttributeType: "S"
       KeySchema:
         - AttributeName: "daemon-id"
           KeyType: "HASH"
-        - AttributeName: "task-arn"
-          KeyType: "RANGE"
+        # - AttributeName: "task-arn"
+        #   KeyType: "RANGE"
       # PointInTimeRecoverySpecification:
       #   PointInTimeRecoveryEnabled: true
       # TimeToLiveSpecification:
