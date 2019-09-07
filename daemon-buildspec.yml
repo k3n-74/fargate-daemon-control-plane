@@ -5,7 +5,7 @@ phases:
       python: 3.7
   build:
     commands:
-      - pip install -t ./CommonLayer/python boto3 aws-xray-sdk
+      - pip install -t ./CommonLayer/python boto3 aws-xray-sdk pynamodb
       - cat ./daemon.yaml
       - aws cloudformation package --template-file ./daemon.yaml --s3-bucket "$PIPELINE_ARTIFACT_BUCKET" --s3-prefix cfn-packaged --output-template-file ./daemon.yaml.packaged
       - cat ./daemon.yaml.packaged
