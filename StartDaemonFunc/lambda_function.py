@@ -4,6 +4,7 @@ import time
 from aws_xray_sdk.core import patch_all
 from botocore.client import ClientError, Config
 import traceback
+import dcp
 
 patch_all()
 
