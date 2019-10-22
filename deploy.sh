@@ -1,8 +1,20 @@
 #!/bin/bash
 
-mkdir ./CommonLayer/python
-cp ./CommonLayer/dummy.py ./CommonLayer/python/dummy.py
-pip install -r ./CommonLayer/requirements.txt -t ./CommonLayer/python
+while getopts m OPT
+do
+  case $OPT in
+    "m" ) FLG_INSTALL_MODULE="TRUE" ;;
+      * ) echo "Usage: [-m]"
+          echo "m: install modules to PublicModuleLayer"
+          exit 1 ;;
+  esac
+done
+
+if [ "$FLG_INSTALL_MODULE" = "TRUE" ]; then
+  rm -rf ./PublicModuleLayer/python
+  mkdir ./PublicModuleLayer/python
+  pip install -r ./PublicModuleLayer/requirements.txt -t ./PublicModuleLayer/python
+fi
 
 aws cloudformation package \
   --template-file daemon.yaml \

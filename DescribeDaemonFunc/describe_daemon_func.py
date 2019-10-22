@@ -1,8 +1,11 @@
 import json
 
+from dcp.deco import lambda_handle_exception
+from logging import getLogger
+logger = getLogger()
+
+@lambda_handle_exception(logger)
 def lambda_handler(event, context):
-    
-    print(json.dumps(event))
     
     return {
         'statusCode': 200,

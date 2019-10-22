@@ -1,43 +1,50 @@
+import os
 import json
 import boto3
 import time
 from aws_xray_sdk.core import patch_all
 from botocore.client import ClientError, Config
 import traceback
-import dcp
+
+from dcp.table_models import DaemonMasterModel
+from datetime import datetime
+
+from dcp.deco import lambda_handle_exception
+from logging import getLogger
+logger = getLogger()
 
 patch_all()
 
-run_task_res = None
 
+@lambda_handle_exception(logger)
 def lambda_handler(event, context):
     
-    print(json.dumps(event))
+    daemon_id = str(time.time())
+    ecs = boto3.client('ecs')
+    cluster_arn = os.environ['ClusterArn']
+    task_definition = event.get('taskDefinition')
     
-    try:
-        
-        daemon_id = str(time.time())
-        ecs = boto3.client('ecs')
-        cluster = 'daemon-daemon-DaemonEcsCluster-OBWV6JAR18NG'
-        task_definition = event.get('taskDefinition')
-        
-        run_daemon_res = run_daemon(ecs, daemon_id, cluster, task_definition)
-        
-        return {
-            'daemon_id' : daemon_id,
-            'taskArn' : run_daemon_res.get('taskArn')
-        }
+    run_daemon_res = run_daemon(ecs, daemon_id, cluster_arn, task_definition)
+    task_arn = run_daemon_res.get('taskArn')
+    put_daemon_master( daemon_id, task_arn )
 
-    except ClientError as e:
-        traceback.print_exc()
-        raise e
-    
-    except Exception as e:
-        traceback.print_exc()
-        raise e
-    
+    return {
+        'daemon_id' : daemon_id,
+        'taskArn' : task_arn
+    }
 
-def run_daemon(ecs, daemon_id, cluster, task_definition):
+def put_daemon_master( daemon_id, task_arn ):
+    dmm = DaemonMasterModel(daemon_id)
+    dmm.daemon_status_desired = 'RUNNING'
+    dmm.daemon_status_last = 'PENDING'
+    dmm.daemon_status_changed_at = datetime.now()
+    dmm.task_current_arn = task_arn
+    dmm.task_current_status_desired = 'RUNNING'
+    dmm.task_current_status_last = 'PENDING'
+    dmm.task_current_status_changed_at = datetime.now()
+    dmm.save()
+
+def run_daemon(ecs, daemon_id, cluster_arn, task_definition):
     launch_type='FARGATE'
     network_configuration={
         'awsvpcConfiguration' : {
@@ -53,7 +60,7 @@ def run_daemon(ecs, daemon_id, cluster, task_definition):
     }
 
     run_task_res = ecs.run_task(
-            cluster=cluster,
+            cluster=cluster_arn,
             taskDefinition=task_definition,
             launchType=launch_type,
             networkConfiguration=network_configuration,
@@ -91,5 +98,5 @@ def create_container_overrides( ecs, task_definition, daemon_id ):
         })
 
     return container_overrides
-    
-    
+
+ 
